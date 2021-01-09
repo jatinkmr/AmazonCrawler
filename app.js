@@ -30,10 +30,24 @@ async function scraper(url) {
     const priceJson = await priceText.jsonValue()
     const priceFinal = priceJson.replace("\\n", '').trim()
 
+    // get the original Price
+    const [originalPrice] = await page.$x(`//*[@id="price"]/table/tbody/tr[1]/td[2]/span[1]`)
+    const originalPriceText = await originalPrice.getProperty('textContent')
+    const originalPriceJson = await originalPriceText.jsonValue()
+    const originalPriceFinal = originalPriceJson.replace("\\n", '').trim()
+
+    // get the discounted percentage with amount
+    const [savingPrice] = await page.$x(`//*[@id="regularprice_savings"]/td[2]`)
+    const savingPriceText = await savingPrice.getProperty('textContent')
+    const savingPriceJson = await savingPriceText.jsonValue()
+    const savingPriceFinal = savingPriceJson.replace("\\n", '').trim()
+
     let productDetails = {
         ProductTitle: titleFinal,
         PriceAfterDiscount: priceFinal,
-        ImageSource: imageSourceJson
+        ImageSource: imageSourceJson,
+        OriginalPrice: originalPriceFinal,
+        Saving: savingPriceFinal
     };
 
     console.log('Details => => ', productDetails)
@@ -43,8 +57,8 @@ async function scraper(url) {
 
 var arguments = process.argv;
 
-// console.log(arguments[arguments.length-1]); 
+console.log(arguments); 
 
 scraper(arguments[arguments.length - 1])
 
-// to run node app.js https://www.amazon.in/Haier-Direct-Cool-Single-Door-Refrigerator-20CFDS/dp/B084496YFG/ref=sr_1_3?dchild=1&pf_rd_p=c37696de-37e6-4a7e-89fe-6076a6ae96a5&pf_rd_r=CHEC93MZKX3GYHR90WST&qid=1610169242&refinements=p_85%3A10440599031&rps=1&s=kitchen&sr=1-3
+// to run node app.js https://www.amazon.in/Haier-Direct-Cool-Single-Door-Refrigerator-20CFDS/dp/B084496YFG/
