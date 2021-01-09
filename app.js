@@ -102,11 +102,17 @@ async function scraper(url) {
     const descriptionJson = await descriptionText.jsonValue()
     const finalDescription = descriptionJson.replace("\\n", '').trim()
 
-    // get releated items
+    // get related items
     const [relatedItem] = await page.$x(`//*[@id="sp_detail"]/div[2]/div`)
     const relatedItemText = await relatedItem.getProperty('textContent')
     const relatedItemJson = await relatedItemText.jsonValue()
     const finalRelatedItem = relatedItemJson.replace("\\n", '').trim()
+
+    // get other features
+    const [otherFeatures] = await page.$x(`//*[@id="cr-summarization-attributes-list"]`)
+    const otherFeatureText = await otherFeatures.getProperty('textContent')
+    const otherFeatureJson = await otherFeatureText.jsonValue()
+    const finalOtherFeature = otherFeatureJson.replace("\\n", '').trim()
 
     let productDetails = {
         ProductTitle: finalTitle,
@@ -124,7 +130,8 @@ async function scraper(url) {
         EmiDetails: finalEmiDetail,
         Feature: finalFeature,
         Description: finalDescription,
-        RelatedItems: finalRelatedItem
+        RelatedItems: finalRelatedItem,
+        OtherFeatures: finalOtherFeature
     };
 
     console.log('Details => => ', productDetails)
